@@ -4,7 +4,8 @@
 Data &amp; code available in this repository feature the article "**Evaluation
 of national responses to COVID-19 pandemic based on Pareto optimality**" by
 Kochańczyk and Lipniacki (2020). The article is currently under consideration
-in *Scientific Reports*.
+in *Scientific Reports*. A preprint is available from
+[medRxiv](https://doi.org/10.1101/2020.06.27.20141747).
 
 
 ### Data sources
