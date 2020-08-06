@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
+#pylint: disable = C, R
+#pylint: disable = E1101  # no-member (generated-members)
+#pylint: disable = C0302  # too-many-lines
+
 """
   This code features the article "Evaluation of national responses to COVID-19 pandemic based
   on Pareto optimality" by Kochanczyk & Lipniacki (submitted to Scientific Reports, 2020).
 
   Author: Marek Kochanczyk
   License: MIT
-  Last changes: June 26, 2020
+  Last changes: August 05, 2020
 """
+
+# --------------------------------------------------------------------------------------------------
 
 import re
 from operator import itemgetter
@@ -20,8 +26,17 @@ import matplotlib.ticker as tckr
 import matplotlib.patheffects as pthff
 from colorsys import rgb_to_hls
 from pandas.plotting import register_matplotlib_converters
+import locale
 
 register_matplotlib_converters()
+locale.setlocale(locale.LC_TIME,'en_US')
+locale.setlocale(locale.LC_ALL, 'en_US')
+
+
+# -- Contents settings -----------------------------------------------------------------------------
+
+USE_DATA_SNAPSHOT = True
+FINAL_DAY = pd.to_datetime('2020-06-17')
 
 
 # -- Plot shared settings --------------------------------------------------------------------------
@@ -122,80 +137,46 @@ INFECTION_TO_DEATH = [
 ]
 
 POPULATION = {
-    'Portugal':       10.28,
-    'Spain':          46.94,
-    'France':         66.99,
-    'United Kingdom': 66.65,
-    'Belgium':        11.46,
-    'Netherlands':    17.28,
-    'Italy':          60.36,
-    'Germany':        83.02,
-    'Poland':         37.97,
-    'Austria':         8.86,
-    'Switzerland':     8.57,
-    'Hungary':         9.77,
-    'Slovenia':        2.08,
-    'Slovakia':        5.45,
-    'Czechia':        10.65,
-    'Denmark':         5.81,
-    'Ireland':         4.91,
-    'Finland':         5.52,
-    'Sweden':         10.23,
-    'Norway':          5.37,
-    'Ukraine':        41.98,
-    'Romania':        19.41,
-    'Bulgaria':        7.00,
-    'Croatia':         4.08,
-    'Greece':         10.72,
-    'Serbia':          6.98,
-    'South Korea':    51.64,
-    'Russia':        144.50,
-    'Canada':         37.59,
-    'Brazil':        209.50,
-    'Argentina':      44.50,
-    'Chile':          18.73,
-    'Uruguay':         3.45,
-    'Peru':           32.00,
-    'Colombia':       49.65,
-    'Bolivia':        11.35,
-    'Ecuador':        17.08,
-    'Paraguay':        6.96,
-    'Guatemala':      17.25,
-    'Mexico':        126.20,
-    'Japan':          126.5,
-    'Australia':      24.99,
-    'New Zealand':     4.89,
-    'Taiwan':         23.78,
-    'California':     39.51,
-    'Texas':          29.00,
-    'Florida':        21.48,
-    'New York':       19.45,
-    'Pennsylvania':   12.80,
-    'Illinois':       12.67,
-    'Ohio':           11.69,
-    'Georgia':        10.62,
-    'North Carolina': 10.49,
-    'Michigan':        9.99
+    'Portugal':       10.28,  'Spain':          46.94,
+    'France':         66.99,  'United Kingdom': 66.65,
+    'Belgium':        11.46,  'Netherlands':    17.28,
+    'Italy':          60.36,  'Germany':        83.02,
+    'Poland':         37.97,  'Austria':         8.86,
+    'Switzerland':     8.57,  'Hungary':         9.77,
+    'Slovenia':        2.08,  'Slovakia':        5.45,
+    'Czechia':        10.65,  'Denmark':         5.81,
+    'Ireland':         4.91,  'Finland':         5.52,
+    'Sweden':         10.23,  'Norway':          5.37,
+    'Ukraine':        41.98,  'Romania':        19.41,
+    'Bulgaria':        7.00,  'Croatia':         4.08,
+    'Greece':         10.72,  'Serbia':          6.98,
+    'South Korea':    51.64,  'Russia':        144.50,
+    'Canada':         37.59,  'Brazil':        209.50,
+    'Argentina':      44.50,  'Chile':          18.73,
+    'Uruguay':         3.45,  'Peru':           32.00,
+    'Colombia':       49.65,  'Bolivia':        11.35,
+    'Ecuador':        17.08,  'Paraguay':        6.96,
+    'Guatemala':      17.25,  'Mexico':        126.20,
+    'Japan':          126.5,  'Australia':      24.99,
+    'New Zealand':     4.89,  'Taiwan':         23.78,
+    'California':     39.51,  'Texas':          29.00,
+    'Florida':        21.48,  'New York':       19.45,
+    'Pennsylvania':   12.80,  'Illinois':       12.67,
+    'Ohio':           11.69,  'Georgia':        10.62,
+    'North Carolina': 10.49,  'Michigan':        9.99
 }
 
 STATE_TO_ABBREV = {
-    'California':    'CA',
-    'Texas':         'TX',
-    'Florida':       'FL',
-    'New York':      'NY',
-    'Pennsylvania':  'PA',
-    'Illinois':      'IL',
-    'Ohio':          'OH',
-    'Georgia':       'GA',
-    'North Carolina':'NC',
-    'Michigan':      'MI'
+    'California':    'CA',  'Texas':         'TX',
+    'Florida':       'FL',  'New York':      'NY',
+    'Pennsylvania':  'PA',  'Illinois':      'IL',
+    'Ohio':          'OH',  'Georgia':       'GA',
+    'North Carolina':'NC',  'Michigan':      'MI'
 }
 
 ABBREV_TO_STATE = {abbrev: state for state, abbrev in STATE_TO_ABBREV.items()}
 
 
-
-USE_DATA_SNAPSHOT = True
 
 if USE_DATA_SNAPSHOT:
     SNAPSHOT_BASE_URL = 'https://raw.githubusercontent.com/' + \
@@ -214,19 +195,21 @@ else:
 
 
 
-# from Jan 02 till June 30, source: https://www.officeholidays.com
-USA_HOLIDAYS_ = ['2020-01-20', '2020-05-25']
+# from Jan 02 till August 01, source: https://www.officeholidays.com
+USA_HOLIDAYS_ = ['2020-01-20', '2020-05-25', '2020-07-03', '2020-07-04']
 HOLIDAYS_ = {
     'Italy':          ['2020-01-06', '2020-04-13', '2020-04-25', '2020-05-01', '2020-06-02'],
     'Spain':          ['2020-01-06', '2020-04-10', '2020-05-01'],
-    'France':         ['2020-04-13', '2020-05-01', '2020-05-08', '2020-05-21', '2020-06-01'],
-    'Belgium':        ['2020-04-13', '2020-05-01', '2020-05-21', '2020-06-01'],
-    'Switzerland':    ['2020-04-10', '2020-04-13', '2020-05-21', '2020-06-01'],
+    'France':         ['2020-04-13', '2020-05-01', '2020-05-08', '2020-05-21', '2020-06-01',
+                       '2020-07-14'],
+    'Belgium':        ['2020-04-13', '2020-05-01', '2020-05-21', '2020-06-01', '2020-07-21'],
+    'Switzerland':    ['2020-04-10', '2020-04-13', '2020-05-21', '2020-06-01', '2020-08-01'],
     'United Kingdom': ['2020-04-10', '2020-05-08', '2020-05-25'],
     'Germany':        ['2020-04-10', '2020-04-13', '2020-05-01', '2020-05-21', '2020-06-01'],
     'Sweden':         ['2020-01-06', '2020-04-10', '2020-04-12', '2020-04-13', '2020-05-01',
                        '2020-05-21', '2020-05-31', '2020-06-06'],
-    'Czechia':        ['2020-04-10', '2020-04-13', '2020-05-01', '2020-05-08'],
+    'Czechia':        ['2020-04-10', '2020-04-13', '2020-05-01', '2020-05-08', '2020-07-05',
+                       '2020-07-06'],
     'Austria':        ['2020-01-06', '2020-04-13', '2020-05-01', '2020-05-21', '2020-06-01',
                        '2020-06-11'],
     'Croatia':        ['2020-01-06', '2020-04-13', '2020-05-01', '2020-06-11', '2020-06-22'],
@@ -235,7 +218,8 @@ HOLIDAYS_ = {
                        '2020-05-09'],
     'Poland':         ['2020-01-06', '2020-04-12', '2020-04-13', '2020-05-01', '2020-05-03',
                        '2020-05-31', '2020-06-11'],
-    'Slovakia':       ['2020-01-06', '2020-04-10', '2020-04-13', '2020-05-01', '2020-05-08'],
+    'Slovakia':       ['2020-01-06', '2020-04-10', '2020-04-13', '2020-05-01', '2020-05-08',
+                       '2020-07-05'],
     'Denmark':        ['2020-04-09', '2020-04-10', '2020-04-13', '2020-05-08', '2020-05-21',
                        '2020-06-01'],
     'Norway':         ['2020-04-09', '2020-04-10', '2020-04-12', '2020-04-13', '2020-05-01',
@@ -260,7 +244,8 @@ HOLIDAYS_ = {
     'Greece':         ['2020-01-06', '2020-03-02', '2020-03-25', '2020-04-17', '2020-04-20',
                        '2020-05-01', '2020-06-08'],
     'Japan':          ['2020-01-13', '2020-02-11', '2020-02-23', '2020-02-24', '2020-03-20',
-                       '2020-04-29', '2020-05-03', '2020-05-04', '2020-05-05', '2020-05-06'],
+                       '2020-04-29', '2020-05-03', '2020-05-04', '2020-05-05', '2020-05-06',
+                       '2020-07-23', '2020-07-24'],
     'Australia':      ['2020-01-27', '2020-04-10', '2020-04-13', '2020-04-25'],
     'New Zealand':    ['2020-01-02', '2020-02-06', '2020-04-10', '2020-04-13', '2020-04-27',
                        '2020-06-01'],
@@ -268,16 +253,19 @@ HOLIDAYS_ = {
                        '2020-01-28', '2020-01-29', '2020-02-28', '2020-04-02', '2020-04-03',
                        '2020-04-05', '2020-05-01', '2020-06-25', '2020-06-25'],
     'Mexico':         ['2020-02-03', '2020-03-16', '2020-04-09', '2020-04-10', '2020-05-01'],
-    'Canada':         ['2020-02-17', '2020-05-18'],
+    'Canada':         ['2020-02-17', '2020-05-18', '2020-07-01'],
     'Guatemala':      ['2020-04-09', '2020-04-10', '2020-04-11', '2020-05-01', '2020-06-29'],
     'Brazil':         ['2020-02-24', '2020-02-25', '2020-04-10', '2020-04-21', '2020-05-01',
                        '2020-06-11'],
     'Argentina':      ['2020-02-24', '2020-02-25', '2020-03-23', '2020-03-24', '2020-04-02',
-                       '2020-04-10', '2020-05-01', '2020-05-25', '2020-06-15', '2020-06-20'],
-    'Chile':          ['2020-04-10', '2020-04-11', '2020-05-01', '2020-05-21', '2020-06-29'],
-    'Peru':           ['2020-04-09', '2020-04-10', '2020-05-01', '2020-06-24', '2020-06-29'],
+                       '2020-04-10', '2020-05-01', '2020-05-25', '2020-06-15', '2020-06-20',
+                       '2020-07-09', '2020-07-10'],
+    'Chile':          ['2020-04-10', '2020-04-11', '2020-05-01', '2020-05-21', '2020-06-29',
+                       '2020-07-16'],
+    'Peru':           ['2020-04-09', '2020-04-10', '2020-05-01', '2020-06-24', '2020-06-29',
+                       '2020-07-27', '2020-07-28', '2020-07-29'],
     'Colombia':       ['2020-01-06', '2020-03-23', '2020-04-09', '2020-04-10', '2020-05-01',
-                       '2020-05-25', '2020-06-15'],
+                       '2020-05-25', '2020-06-15', '2020-07-20'],
     'Bolivia':        ['2020-01-22', '2020-02-24', '2020-02-25', '2020-04-10', '2020-05-01',
                        '2020-06-11', '2020-06-21', '2020-06-22'],
     'Ecuador':        ['2020-02-24', '2020-02-25', '2020-04-10', '2020-04-12', '2020-05-01',
@@ -312,52 +300,29 @@ THROWINS = {country: list(map(pd.to_datetime, days)) for country, days in THROWI
 
 def color_of(country, dull_color=(0.15, 0.15, 0.15)):
     colors = {
-        'United Kingdom': (0.20, 0.00, 0.99),
-        'Austria':        plt.cm.tab10(6),
-        'Italy':          plt.cm.tab10(2),
-        'Denmark':        (0.95, 0.15, 0.05),
-        'Czechia':        plt.cm.tab10(4),
-        'Sweden':         (0.10, 0.20, 0.90),
-        'Belgium':        plt.cm.tab10(5),
-        'Poland':         (0.15, 0.65, 1.00),
-        'France':         (0.95, 0.25, 0.75),
-        'Spain':          plt.cm.tab10(3),
-        'Germany':        (0.55, 0.25, 0.70),
-        'Switzerland':    (0.80, 0.35, 0.95),
-        'Slovakia':       (0.25, 0.90, 0.50),
-        'Russia':         (0.80, 0.45, 0.15),
-        'Greece':         (0.45, 0.75, 1.00),
-        'Norway':         plt.cm.tab10(0),
-        'Slovenia':       plt.cm.tab10(1),
-        'Romania':        plt.cm.tab10(8),
-        'Portugal':       (0.90, 0.65, 0.00),
-        'Finland':        plt.cm.tab10(9),
-        'Netherlands':    (0.75, 0.50, 0.00),
-        'Ireland':        (0.10, 0.80, 0.00),
-        'Hungary':        (0.35, 0.35, 0.35),
-        'Croatia':        (0.50, 0.55, 0.00),
-        'Serbia':         (0.70, 0.60, 0.65),
-        'Bulgaria':       plt.cm.tab10(2),
-        'California':     (0.90, 0.70, 0.00),
-        'Texas':          (0.35, 0.40, 0.40),
-        'Florida':        (0.95, 0.40, 0.00),
-        'New York':       (0.25, 0.00, 1.00),
-        'Pennsylvania':   (0.20, 0.25, 1.00),
-        'Illinois':       (0.80, 0.50, 0.00),
-        'Ohio':           (0.65, 0.00, 0.00),
-        'Georgia':        (0.00, 0.45, 0.80),
-        'North Carolina': (0.10, 0.00, 0.95),
-        'Michigan':       (0.05, 0.50, 0.15),
-        'Brazil':         (0.00, 0.70, 0.20),
-        'Mexico':         (0.00, 0.50, 0.60),
-        'Peru':           (0.75, 0.50, 0.25),
-        'Ecuador':        (0.65, 0.65, 0.00),
-        'Chile':          (0.65, 0.15, 0.00),
-        'Bolivia':        (0.20, 0.65, 0.00),
-        'Colombia':       (0.00, 0.10, 0.65),
-        'Argentina':      (0.30, 0.75, 1.00),
-        'Guatemala':      (0.80, 0.10, 0.60),
-        'Canada':         (0.80, 0.10, 0.60)
+        'United Kingdom': (0.20, 0.00, 0.99),  'Austria':        plt.cm.tab10(6),
+        'Italy':          plt.cm.tab10(2),     'Denmark':        (0.95, 0.15, 0.05),
+        'Czechia':        plt.cm.tab10(4),     'Sweden':         (0.10, 0.20, 0.90),
+        'Belgium':        plt.cm.tab10(5),     'Poland':         (0.15, 0.65, 1.00),
+        'France':         (0.95, 0.25, 0.75),  'Spain':          plt.cm.tab10(3),
+        'Germany':        (0.55, 0.25, 0.70),  'Switzerland':    (0.80, 0.35, 0.95),
+        'Slovakia':       (0.25, 0.90, 0.50),  'Russia':         (0.80, 0.45, 0.15),
+        'Greece':         (0.45, 0.75, 1.00),  'Norway':         plt.cm.tab10(0),
+        'Slovenia':       plt.cm.tab10(1),     'Romania':        plt.cm.tab10(8),
+        'Portugal':       (0.90, 0.65, 0.00),  'Finland':        plt.cm.tab10(9),
+        'Netherlands':    (0.75, 0.50, 0.00),  'Ireland':        (0.10, 0.80, 0.00),
+        'Hungary':        (0.35, 0.35, 0.35),  'Croatia':        (0.50, 0.55, 0.00),
+        'Serbia':         (0.70, 0.60, 0.65),  'Bulgaria':       plt.cm.tab10(2),
+        'California':     (0.90, 0.70, 0.00),  'Texas':          (0.35, 0.40, 0.40),
+        'Florida':        (0.95, 0.40, 0.00),  'New York':       (0.25, 0.00, 1.00),
+        'Pennsylvania':   (0.20, 0.25, 1.00),  'Illinois':       (0.80, 0.50, 0.00),
+        'Ohio':           (0.65, 0.00, 0.00),  'Georgia':        (0.00, 0.45, 0.80),
+        'North Carolina': (0.10, 0.00, 0.95),  'Michigan':       (0.05, 0.50, 0.15),
+        'Brazil':         (0.00, 0.70, 0.20),  'Mexico':         (0.00, 0.50, 0.60),
+        'Peru':           (0.75, 0.50, 0.25),  'Ecuador':        (0.65, 0.65, 0.00),
+        'Chile':          (0.65, 0.15, 0.00),  'Bolivia':        (0.20, 0.65, 0.00),
+        'Colombia':       (0.00, 0.10, 0.65),  'Argentina':      (0.30, 0.75, 1.00),
+        'Guatemala':      (0.80, 0.10, 0.60),  'Canada':         (0.80, 0.10, 0.60)
     }
     if country in colors.keys():
         return colors[country]
@@ -394,9 +359,10 @@ def set_ticks_lengths(ax):
 
 def abbrev_date(date):
     return str(date).replace('2020', '').split()[0] \
-           .replace('-02-', 'Feb ').replace('-03-', 'Mar ') \
-           .replace('-04-', 'Apr ').replace('-05-', 'May ') \
-           .replace('-06-', 'Jun ')
+           .replace('-01-', 'Jan').replace('-02-', 'Feb ').replace('-03-', 'Mar ') \
+           .replace('-04-', 'Apr').replace('-05-', 'May ').replace('-06-', 'Jun ') \
+           .replace('-07-', 'Jul').replace('-08-', 'Aug ').replace('-09-', 'Sep ') \
+           .replace('-10-', 'Oct').replace('-11-', 'Nov ').replace('-12-', 'Dec ')
 
 
 def darken(color, scale=0.5):
@@ -410,8 +376,8 @@ def is_USA_state(location):
     return location in LOCATIONS['USA']
 
 
-def extract_cases_and_deaths(location, columns=['date', 'new_cases', 'total_cases',
-                                                'new_deaths', 'total_deaths']):
+def extract_cases_and_deaths(location):
+    columns = ['date', 'new_cases', 'total_cases', 'new_deaths', 'total_deaths']
     if is_USA_state(location):
         state_abbrev = STATE_TO_ABBREV[location]
         return TRACKING_DATA.loc[state_abbrev]
@@ -422,16 +388,19 @@ def extract_cases_and_deaths(location, columns=['date', 'new_cases', 'total_case
 
 def extract_mobility(location):
     if is_USA_state(location):
-        df = MOBILITY_DATA[ (MOBILITY_DATA['location'] == 'United States') & \
-                            (MOBILITY_DATA['sub_region_1'] == location) & \
-                             MOBILITY_DATA['sub_region_2'].isnull() ].set_index('date')
+        df = MOBILITY_DATA[  (MOBILITY_DATA['location'] == 'United States') \
+                           & (MOBILITY_DATA['sub_region_1'] == location) \
+                           &  MOBILITY_DATA['sub_region_2'].isnull() ].set_index('date')
     else:
-        df = MOBILITY_DATA[  (MOBILITY_DATA['location'] == location) \
+        df = MOBILITY_DATA[ (MOBILITY_DATA['location'] == location) \
                            & MOBILITY_DATA['sub_region_1'].isnull() ].set_index('date')
+        if 'metro_area' in df.columns:
+            df = df[ df['metro_area'].isnull() ]
         assert df['sub_region_1'].isnull().all() and df['sub_region_2'].isnull().all()
     return df
 
-def smoothed_daily_data(location, daily_ws=[3, 7, 14], fix=True):
+def smoothed_daily_data(location, fix=True):
+    daily_ws=[3, 7, 14]
     df = extract_cases_and_deaths(location).copy()
 
     if fix:
@@ -476,7 +445,7 @@ def reasonable_span(df, kind, location_population,
 
     # -- front
     if trim_front:
-        above_min_cumul_indices = df[f"total_cases"].values >= front_min_cumul
+        above_min_cumul_indices = df['total_cases'].values >= front_min_cumul
         df = df[above_min_cumul_indices]
 
     # -- back
@@ -535,8 +504,8 @@ def average_mobility_reduction(location_or_mo):
 
 
 def insert_mobility_reduction(df, location, min_sum_weights=0.5):
-    def has_day_(dd):         return dd in avg_mo.index
-    def is_weekday_(dd):      return dd.dayofweek < 5
+    def has_day_(dd):          return dd in avg_mo.index
+    def is_weekday_(dd):       return dd.dayofweek < 5
     def is_holiday_(cc, dd):   return cc in HOLIDAYS and dd in HOLIDAYS[cc]
     def is_valid_day_(cc, dd): return has_day_(dd) and is_weekday_(dd) and not is_holiday_(cc, dd)
 
@@ -574,24 +543,60 @@ def insert_tests_performed(df, location, interpolate=True, w=7, verbose=False):
         return df
     else:
         df_test = None
+        colnames = ['date', 'Cumulative total']
+        endings =  ['tests performed', 'tests performed (CDC) (incl. non-PCR)', 'samples tested',
+                    'samples analysed', 'units unclear', 'units unclear (incl. non-PCR)',
+                    'people tested', 'people tested (incl. non-PCR)', 'cases tested']
 
         entities = set(OWID_TESTING_DATA['Entity'])
-        colnames = ['date', 'Cumulative total']
-        for ending in ['tests performed', 'samples tested', 'units unclear', 'people tested',
-                       'cases tested', 'samples analysed']:
+
+        location_entities = {}
+        for cc, tt in [(e.split(' - ')[0], e.split(' - ')[1]) for e in entities]:
+            assert tt in endings
+            if cc in location_entities:
+                location_entities[cc] = location_entities[cc] + [tt]
+            else:
+                location_entities[cc] = [tt]
+        sel_endings = ['people tested (incl. non-PCR)'] if location == 'Japan' else endings
+        for ending in sel_endings:
             ent = f"{location.replace('Czechia', 'Czech Republic')} - {ending}"
             if ent in entities:
-                if verbose: 
-                    print(location, ent)
                 ent_indices = OWID_TESTING_DATA['Entity'] == ent
-                df_test = OWID_TESTING_DATA[ent_indices][colnames] \
-                          .rename(columns={'Cumulative total': 'total_tests'}).set_index('date')
-                break
+                df_pre = OWID_TESTING_DATA[ent_indices][colnames].set_index('date') \
+                        .rename(columns={'Cumulative total': ending})
+                if not df_pre[ending].isnull().all():
+                    df_test = df_pre if df_test is None else df_test.join(df_pre, how='outer')
 
         if df_test is None:
             print('Warning: no data on testing in', location)
+            df['total_tests'] = np.nan
             df['tests_per_hit'] = np.nan
             return df
+        else:
+            if verbose:
+                print(location, '::',
+                      df_test.index[ 0].strftime('%Y: %B, %d'), '--',
+                      df_test.index[-1].strftime('%B, %d'), '::', ', '.join(list(df_test.columns)))
+
+        if len(df_test.columns) == 1:
+            df_test.rename(columns=lambda colnm: re.sub(r'^.*$', 'total_tests', colnm), inplace=True)
+        else:
+            df_test['total_tests'] = np.nan
+            df_test['test_type'] = '?'
+            for ending in endings:
+                if ending not in df_test.columns: continue
+                for day in df_test.index:
+                    if np.isnan(df_test.loc[day]['total_tests']) and not np.isnan(df_test.loc[day][ending]):
+                        df_test.at[day, 'total_tests'] = df_test.loc[day][ending]
+                        df_test.at[day, 'test_type'] = ending
+            if verbose:
+                for ending in endings:
+                    if ending not in df_test.columns: continue
+                    df_sub = df_test[ df_test['test_type'] == ending ][ending].dropna()
+                    if len(df_sub):
+                        print(' '*len(location), '::',
+                            df_sub.index[ 0].strftime('%Y: %B, %d'), '--',
+                            df_sub.index[-1].strftime('%B, %d'), '::', ending)
 
         if interpolate:
             df_test['total_tests'] = df_test['total_tests'].interpolate(limit_area='inside',
@@ -621,7 +626,7 @@ OWID_DATA = pd.read_csv(OWID_DATA_URL, parse_dates=['date']) \
               .replace({'Czech Republic': 'Czechia'})
 OWID_DATA['date'] = OWID_DATA['date'].apply(pd.to_datetime)
 
-MOBILITY_DATA = pd.read_csv(MOBILITY_DATA_URL, parse_dates=['date'], low_memory=False)       \
+MOBILITY_DATA = pd.read_csv(MOBILITY_DATA_URL, parse_dates=['date'], low_memory=False) \
                   .rename(columns=lambda colnm: re.sub('_percent_change_from_baseline$', '', colnm)) \
                   .rename(columns={'country_region': 'location'})
 
@@ -632,19 +637,18 @@ TRACKING_DATA = pd.read_csv(TRACKING_URL, parse_dates=['date'])[::-1].set_index(
 TRACKING_DATA['new_tests'] = TRACKING_DATA['negativeIncrease'] + TRACKING_DATA['positiveIncrease']
 TRACKING_DATA['total_tests'] = TRACKING_DATA['negative'] + TRACKING_DATA['positive']
 TRACKING_DATA.rename(columns={'positive': 'total_cases', 'positiveIncrease': 'new_cases',
-                              'death': 'total_deaths',  'deathIncrease': 'new_deaths'}, inplace=True)
+                              'death': 'total_deaths', 'deathIncrease': 'new_deaths'}, inplace=True)
 
 
-FINAL_DAY = pd.to_datetime('2020-06-17')
 SPAIN_DAILY_FINAL_DAY = pd.to_datetime('2020-05-11')
 MIN_POPULATION_M = 4
 
 LOCATIONS = {
     'Europe': [
-        'Italy', 'Spain','France', 'Belgium', 'Switzerland', 'United Kingdom', 'Sweden',  'Germany',
+        'Italy', 'Spain','France', 'Belgium', 'Switzerland', 'United Kingdom', 'Sweden', 'Germany',
         'Czechia', 'Austria', 'Croatia', 'Serbia', 'Poland', 'Slovakia', 'Denmark', 'Norway',
-        'Finland', 'Netherlands', 'Ireland', 'Slovenia','Portugal', 'Romania', 'Bulgaria', 'Hungary',
-        'Greece'],
+        'Finland', 'Netherlands', 'Ireland', 'Slovenia', 'Portugal', 'Romania', 'Bulgaria',
+        'Hungary', 'Greece'],
     'Asia': [
         'South Korea', 'Taiwan', 'Japan'],
     'Americas': [
@@ -689,7 +693,7 @@ def deaths_vs_mobility(trajs, country):
     mob = -trajs[country][['mobility_reduction']].resample('W').sum().cumsum()
     dth =  trajs[country][['new_deaths']].astype('Float64')
     dth = dth.resample('W').sum().cumsum() / POPULATION[country]
-    df = mob.join(dth).rename(columns={'mobility_reduction':   f"mobility_cumul_{country}",
+    df = mob.join(dth).rename(columns={'mobility_reduction':  f"mobility_cumul_{country}",
                                        'new_deaths': f"new_deaths_cumul_per_1M_{country}"})
     return df
 
@@ -778,7 +782,7 @@ def plot_flares(trajs, countries, fig_number='X', fronts=None):
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(7.5, 5))
     adjust_spines(ax, ['left', 'bottom'], left_shift=12)
 
-    ax.set_xlim((0, 5e3))
+    ax.set_xlim((0, 7e3))
     ax.set_ylim((0.1, 2e3))
     ax.set_xlabel(r'Cumulative lockdown \textcolor{Gray}' + str(r'{= $x$}' if fig_number=='1' else r'{}'))
     ax.set_yscale('log')
@@ -795,7 +799,7 @@ def plot_flares(trajs, countries, fig_number='X', fronts=None):
         d = deaths_vs_mobility(trajs, country)
         x, y = d.values.T
         put_final_dot(ax, country, x, y)
-        ax.plot(x, y,  '-.', marker='o' , linestyle='-',
+        ax.plot(x, y,  '-.', marker='o', linestyle='-',
                 linewidth=0.8, markersize=1.1, markeredgewidth=0, alpha=0.7,
                 color=color_of(country), markerfacecolor=darken(color_of(country)))
         pareto_D = d if pareto_D is None else pareto_D.join(d)
@@ -852,7 +856,7 @@ def plot_flares(trajs, countries, fig_number='X', fronts=None):
 
 
 fig1, eaa_fronts = plot_flares(TRAJS, eaa_countries, fig_number='1')
-fig5, fronts = plot_flares(TRAJS, am_countries, fig_number='5', fronts=eaa_fronts)
+fig5, _          = plot_flares(TRAJS, am_countries,  fig_number='5', fronts=eaa_fronts)
 
 
 
@@ -1063,7 +1067,7 @@ def plot_pinworms(trajs, countries, kind, fig_number):
             z = 0.7*np.log(0 + tests_per_hit)
             np.place(z, np.isnan(z), 0)
             np.place(z, np.isinf(z), 1000)
-            np.place(z, z < 0,       0)
+            np.place(z, z < 0, 0)
             lwidths = [z]
         else:
             de = df[['new_deaths14']]
@@ -1075,12 +1079,12 @@ def plot_pinworms(trajs, countries, kind, fig_number):
             z = z['cases14_per_death14'].values
             np.place(z, np.isnan(z), 0)
             np.place(z, np.isinf(z), 1000)
-            np.place(z, z < 0,       0)
+            np.place(z, z < 0, 0)
             lwidths = [1*np.log(1 + z)]
         for segi, seg in enumerate(segments):
             seg = seg.T
             if kind == 'cases':  el = 0.15 + lwidths[0][segi] / 8
-            else:                el = 0.1  + lwidths[0][segi] / 14
+            else:                el = 0.10 + lwidths[0][segi] / 14
             co = sns.set_hls_values(base_color, l=el)
             ax.plot(seg[0], seg[1], '-', color=co, linewidth=lwidths[0][segi],
                     alpha=1, solid_capstyle='round', zorder=20)
