@@ -790,7 +790,7 @@ def plot_flares(trajs, countries, fig_number='X', fronts=None):
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(7.5, 5))
     adjust_spines(ax, ['left', 'bottom'], left_shift=12)
 
-    ax.set_xlim((0, 7e3))
+    ax.set_xlim((0, 8e3))
     ax.set_ylim((0.1, 2e3))
     ax.set_xlabel(r'Cumulative lockdown \textcolor{Gray}' + str(r'{= $x$}' if fig_number=='1' else r'{}'))
     ax.set_yscale('log')
