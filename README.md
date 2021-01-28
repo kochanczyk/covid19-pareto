@@ -1,11 +1,11 @@
 # COVID19&ndash;Pareto
 
 
-Data &amp; code available in this repository feature the article "**Evaluation
-of national responses to COVID-19 pandemic based on Pareto optimality**" by
-Kochańczyk and Lipniacki (2020). The article is currently under consideration
-in *Scientific Reports*. A preprint is available from
-[medRxiv](https://doi.org/10.1101/2020.06.27.20141747).
+Data &amp; code available in this repository feature the article "**Pareto-based evaluation
+of national responses to COVID-19 pandemic shows that saving lives and protecting economy
+are non-trade-off objectives of national responses to COVID-19 pandemic based on Pareto
+optimality **" by Kochańczyk and Lipniacki (2021) published in *Scientific Reports* 
+DOI: [10.1038/s41598-021-81869-2](https://dx.doi.org/10.1038/s41598-021-81869-2).
 
 
 ### Data sources
@@ -15,10 +15,13 @@ All analyzed data originate from public sources:
 * [Our World In Data](https://ourworldindata.org/coronavirus),
 * [Google COVID-19 Community Mobility Reports](https://www.google.com/covid19/mobility),
 * [The COVID Tracking Project](https://covidtracking.com)
+* [Eurostat](https://ec.europa.eu/eurostat)
+* [Center for Disease Control](https://www.cdc.gov)
 
-The master script, `analyze_data_and_make_figures.py`, may work either on
-a static data snapshot, that is available from this repository, or on data
-retrieved during script execution from online services. Script behavior is
-controlled by the boolean value of `USE_DATA_SHAPSHOT` variable, which is 
-currently set to True.
 
+### Source code
+
+The scripts are intended to be executed in sequential order:
+
+* first `01-process_data.py`,
+* then `02-make_figures.py`.
