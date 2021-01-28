@@ -1,10 +1,9 @@
 # COVID19&ndash;Pareto
 
 
-Data &amp; code available in this repository feature the article "**Pareto-based evaluation
+Data &amp; code available in this repository feature the article "Pareto-based evaluation
 of national responses to COVID-19 pandemic shows that saving lives and protecting economy
-are non-trade-off objectives of national responses to COVID-19 pandemic based on Pareto
-optimality**" by Kochańczyk &amp; Lipniacki (2021) published in *Scientific Reports* **11**:2425
+are non-trade-off objectives" by Kochańczyk &amp; Lipniacki (2021) published in *Scientific Reports* **11**:2425
 (DOI: [10.1038/s41598-021-81869-2](https://dx.doi.org/10.1038/s41598-021-81869-2)).
 
 
